@@ -75,7 +75,8 @@
             "minUI5Version": "1.120.11",
             "libs": {
                 "sap.ui.core": {},
-                "sap.fe.templates": {}
+                "sap.fe.templates": {},
+                "sap.f": {}
             }
         },
         "models": {
@@ -108,17 +109,26 @@
                 {
                     "pattern": ":?query:",
                     "name": "TravelList",
-                    "target": "TravelList"
+                    "target": [
+                        "TravelList"
+                    ]
                 },
                 {
                     "pattern": "Travel({key}):?query:",
                     "name": "TravelObjectPage",
-                    "target": "TravelObjectPage"
+                    "target": [
+                        "TravelList",
+                        "TravelObjectPage"
+                    ]
                 },
                 {
                     "pattern": "Travel({key})/to_Booking({key2}):?query:",
                     "name": "BookingObjectPage",
-                    "target": "BookingObjectPage"
+                    "target": [
+                        "TravelList",
+                        "TravelObjectPage",
+                        "BookingObjectPage"
+                    ]
                 }
             ],
             "targets": {
@@ -132,6 +142,23 @@
                             "controlConfiguration": {
                                 "@com.sap.vocabularies.UI.v1.SelectionFields": {
                                     "useSemanticDateRange": true
+                                },
+                                "@com.sap.vocabularies.UI.v1.LineItem": {
+                                    "tableSettings": {
+                                        "quickVariantSelection": {
+                                            "paths": [
+                                                {
+                                                    "annotationPath": "com.sap.vocabularies.UI.v1.SelectionVariant#open"
+                                                },
+                                                {
+                                                    "annotationPath": "com.sap.vocabularies.UI.v1.SelectionVariant#accepted"
+                                                },
+                                                {
+                                                    "annotationPath": "com.sap.vocabularies.UI.v1.SelectionVariant#canceled"
+                                                }
+                                            ]
+                                        }
+                                    }
                                 }
                             },
                             "variantManagement": "Page",
@@ -142,9 +169,12 @@
                                         "route": "TravelObjectPage"
                                     }
                                 }
-                            }
+                            },
+                            "enhanceI18n": "i18n/customTravel.properties"
                         }
-                    }
+                    },
+                    "controlAggregation": "beginColumnPages",
+                    "contextPattern": ""
                 },
                 "TravelObjectPage": {
                     "type": "Component",
@@ -177,7 +207,9 @@
                             },
                             "editableHeaderContent": false
                         }
-                    }
+                    },
+                    "controlAggregation": "midColumnPages",
+                    "contextPattern": "/Travel({key})"
                 },
                 "BookingObjectPage": {
                     "type": "Component",
@@ -186,10 +218,33 @@
                     "options": {
                         "settings": {
                             "entitySet": "Booking",
-                            "editableHeaderContent": false
+                            "editableHeaderContent": false,
+                            "controlConfiguration": {
+                                "to_BookSupplement/@com.sap.vocabularies.UI.v1.LineItem": {
+                                    "columns": {
+                                        "ServingTimeOfMeals": {
+                                            "header": "{i18n>ServingTimeOfMeals}",
+                                            "position": {
+                                                "anchor": "DataField::Price",
+                                                "placement": "After"
+                                            },
+                                            "template": "sap.fe.cap.travel.ext.fragment.ServingTimeOfMeals"
+                                        }
+                                    }
+                                }
+                            }
                         }
-                    }
+                    },
+                    "controlAggregation": "endColumnPages",
+                    "contextPattern": "/Travel({key})/to_Booking({key2})"
                 }
+            },
+            "config": {
+                "flexibleColumnLayout": {
+                    "defaultTwoColumnLayoutType": "TwoColumnsMidExpanded",
+                    "defaultThreeColumnLayoutType": "ThreeColumnsEndExpanded"
+                },
+                "routerClass": "sap.f.routing.Router"
             }
         },
         "contentDensities": {
@@ -200,6 +255,12 @@
             "extensions": {
                 "sap.ui.controllerExtensions": {}
             }
+        },
+        "rootView": {
+            "viewName": "sap.fe.templates.RootContainer.view.Fcl",
+            "type": "XML",
+            "async": true,
+            "id": "appRootView"
         }
     },
     "sap.platform.abap": {

@@ -14,7 +14,11 @@
     "test": "jest",
     "test:mocha": "npx mocha --timeout 20000",
     "watch": "cds watch",
-    "watch-travel_processor": "cds watch --open travel_processor/webapp/index.html?sap-ui-xx-viewCache=false"
+    "watch-travel_processor": "cds watch --open sap.fe.cap.travel/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "watch-customer": "cds watch --open sap.fe.cap.customer/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "undeploy": "cf undeploy capire.sflight --delete-services --delete-service-keys --delete-service-brokers",
+    "build": "rimraf resources mta_archives && mbt build --mtar archive",
+    "deploy": "cf deploy mta_archives/archive.mtar --retries 1"
   },
   "dependencies": {
     "@sap/cds": "^8",
@@ -31,7 +35,11 @@
     "chai-as-promised": "^7.1.1",
     "chai-subset": "^1.6.0",
     "jest": "^28.1.0",
-    "qunit": "^2.9.3"
+    "qunit": "^2.9.3",
+    "cds-plugin-ui5": "^0.13.0",
+    "@sap/cds-dk": "^8",
+    "rimraf": "^5.0.5",
+    "mbt": "^1.2.29"
   },
   "cds": {
     "requires": {
@@ -112,6 +120,10 @@
     "testTimeout": 20000
   },
   "sapux": [
-    "app/travel_processor"
+    "app/travel_processor",
+    "app/customer"
+  ],
+  "workspaces": [
+    "app/*"
   ]
 }
