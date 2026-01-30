@@ -89,3 +89,27 @@ type Percentage : Integer @assert.range: [
   1,
   100
 ];
+
+annotate TravelService.Travel with @Aggregation.ApplySupported: {
+  Transformations       : [
+    'aggregate',
+    'topcount',
+    'bottomcount',
+    'identity',
+    'concat',
+    'groupby',
+    'filter',
+    'expand',
+    'search'
+  ],
+  Rollup                : #None,
+  PropertyRestrictions  : true,
+  GroupableProperties   : [
+    to_Customer_CustomerID,
+    to_Agency_AgencyID,
+    TravelStatus_code,
+    BeginDate,
+    PassengerCountry,
+  ],
+  AggregatableProperties: [{Property: TravelID, }],
+};

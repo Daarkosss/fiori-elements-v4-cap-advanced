@@ -251,6 +251,24 @@ annotate TravelService.Travel with @(
             },
         ],
     },
+    Analytics.AggregatedProperty #TravelID_countdistinct : {
+        $Type : 'Analytics.AggregatedPropertyType',
+        Name : 'TravelID_countdistinct',
+        AggregatableProperty : TravelID,
+        AggregationMethod : 'countdistinct',
+        @Common.Label : '{i18n>DistinctTravels}',
+    },
+    UI.Chart #alpChart : {
+        $Type : 'UI.ChartDefinitionType',
+        ChartType : #Column,
+        Dimensions : [
+            PassengerCountry,
+        ],
+        DynamicMeasures : [
+            '@Analytics.AggregatedProperty#TravelID_countdistinct',
+        ],
+        Title : 'Travels by Customer Country',
+    },
 );
 
 annotate TravelService.Booking with @(
@@ -555,3 +573,18 @@ annotate TravelService.Travel @(Common.SideEffects #ReactonItemCreationOrDeletio
     SourceEntities  : [to_Booking],
     TargetProperties: ['TotalPrice']
 });
+
+annotate TravelService.Travel with {
+    @(Common: {
+        SemanticObject       : 'Customer',
+        SemanticObjectMapping: [{
+            LocalProperty         : to_Customer_CustomerID,
+            SemanticObjectProperty: 'CustomerID'
+        }]
+    })
+    to_Customer
+};
+annotate TravelService.Travel with {
+    PassengerCountry @Common.Label : '{i18n>Customercountry}'
+};
+
