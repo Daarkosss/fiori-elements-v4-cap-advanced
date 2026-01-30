@@ -30,7 +30,8 @@
         "Customer-display": {
           "semanticObject": "Customer",
           "action": "display",
-          "title": "{{Customer-display.flpTitle}}",
+          "title": "Customer",
+          "subTitle": "Display Customers",
           "signature": {
             "parameters": {},
             "additionalParameters": "allowed"

@@ -19,6 +19,9 @@
  * FOR PRODUCTIVE SCENARIOS.
  */
 
+
+// const { createProxyMiddleware } = require('http-proxy-middleware');
+// const UI5_PORT = process.env.UI5_PORT || 8080;
 const fs = require('node:fs');
 const path = require('path');
 const cds = require('@sap/cds');
@@ -77,7 +80,8 @@ const getApps = () => {
                 const description = firstInbound.subTitle || 'Undefined';
                 const additionalInformation = `SAPUI5.Component=${app.id}`;
                 const applicationType = 'URL';
-                const url = `../${appFolder.subFolder}/webapp/`;
+                const url = `../${app.id}`;
+                // const url = `../${appFolder.subFolder}/webapp/`;
                 apps[appId] = {
                     title,
                     description,
@@ -106,6 +110,14 @@ cds.once('bootstrap', (app) => {
  * and were added to the express.js app.
  */
 cds.once('served', () => {
+    // sandbox.use(
+    //     ['/resources', '/test-resources'],
+    //     createProxyMiddleware({
+    //         target: `http://localhost:${UI5_PORT}`,
+    //         changeOrigin: true,
+    //         logLevel: 'silent'
+    //     })
+    // );
 
     // Sandbox configuration
     sandbox.get('/appconfig/fioriSandboxConfig.json', (req, res) => {

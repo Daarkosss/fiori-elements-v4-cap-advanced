@@ -4,13 +4,12 @@ using from '../../db/master-data';
 using from './value-helps';
 
 
-
 //
 // annotatios that control the fiori layout
 //
 
 annotate TravelService.Travel with @(
-    UI                                    : {
+    UI                                     : {
 
         Identification        : [
             {
@@ -101,25 +100,39 @@ annotate TravelService.Travel with @(
                 Target: 'to_Agency/@Communication.Contact#contact',
                 Label : '{i18n>ContactName}',
             },
+            {
+                $Type          : 'UI.DataFieldForIntentBasedNavigation',
+                SemanticObject : 'Customer',
+                Action         : 'display',
+                Label          : '{i18n>DisplayCustomers}',
+                RequiresContext: false,
+                Mapping        : [{
+                    $Type                 : 'Common.SemanticObjectMappingType',
+                    LocalProperty         : to_Customer_CustomerID,
+                    SemanticObjectProperty: 'CustomerID',
+                }]
+            }
         ],
         Facets                : [
             {
                 $Type : 'UI.CollectionFacet',
                 Label : '{i18n>GeneralInformation}',
                 ID    : 'Travel',
-                Facets: [{ // travel details
-                    $Type : 'UI.ReferenceFacet',
-                    ID    : 'TravelData',
-                    Target: '@UI.FieldGroup#TravelData',
-                    Label : '{i18n>GeneralInformation}'
-                },
-                    {
+                Facets: [
+                    { // travel details
                         $Type : 'UI.ReferenceFacet',
-                        Label : '{i18n>TravelAdministrativeData}',
-                        ID : 'TravelAdministrativeData',
-                        Target : '@UI.FieldGroup#TravelAdministrativeData',
-                        @UI.PartOfPreview : false,
-                    },]
+                        ID    : 'TravelData',
+                        Target: '@UI.FieldGroup#TravelData',
+                        Label : '{i18n>GeneralInformation}'
+                    },
+                    {
+                        $Type            : 'UI.ReferenceFacet',
+                        Label            : '{i18n>TravelAdministrativeData}',
+                        ID               : 'TravelAdministrativeData',
+                        Target           : '@UI.FieldGroup#TravelAdministrativeData',
+                        @UI.PartOfPreview: false,
+                    },
+                ]
             },
             { // booking list
                 $Type : 'UI.ReferenceFacet',
@@ -133,13 +146,13 @@ annotate TravelService.Travel with @(
             {Value: to_Customer_CustomerID},
             {Value: Description},
             {
-                $Type: 'UI.DataField',
-                Value: BeginDate,
+                $Type        : 'UI.DataField',
+                Value        : BeginDate,
                 ![@UI.Hidden]: TravelStatus.cancelRestrictions,
             },
             {
-                $Type: 'UI.DataField',
-                Value: EndDate,
+                $Type        : 'UI.DataField',
+                Value        : EndDate,
                 ![@UI.Hidden]: TravelStatus.cancelRestrictions,
             },
         ]},
@@ -154,12 +167,12 @@ annotate TravelService.Travel with @(
             }
         ]}
     },
-    UI.DataPoint #Progress                : {
+    UI.DataPoint #Progress                 : {
         Value        : Progress,
         Visualization: #Progress,
         TargetValue  : 100,
     },
-    UI.SelectionPresentationVariant #table: {
+    UI.SelectionPresentationVariant #table : {
         $Type              : 'UI.SelectionPresentationVariantType',
         PresentationVariant: ![@UI.PresentationVariant],
         SelectionVariant   : {
@@ -167,13 +180,13 @@ annotate TravelService.Travel with @(
             SelectOptions: [],
         },
     },
-    UI.DataPoint #TravelStatus_code       : {
+    UI.DataPoint #TravelStatus_code        : {
         $Type      : 'UI.DataPointType',
         Value      : TravelStatus_code,
         Title      : '{i18n>TravelStatus}',
         Criticality: TravelStatus.criticality,
     },
-    UI.HeaderFacets                       : [
+    UI.HeaderFacets                        : [
         {
             $Type : 'UI.ReferenceFacet',
             ID    : 'TravelStatus_code',
@@ -190,24 +203,24 @@ annotate TravelService.Travel with @(
             Target: '@UI.DataPoint#progress',
         },
     ],
-    UI.DataPoint #TotalPrice              : {
+    UI.DataPoint #TotalPrice               : {
         $Type: 'UI.DataPointType',
         Value: TotalPrice,
         Title: '{i18n>TotalPrice}',
     },
-    UI.DataPoint #progress                : {
+    UI.DataPoint #progress                 : {
         $Type        : 'UI.DataPointType',
         Value        : Progress,
         Title        : '{i18n>Progress}',
         TargetValue  : 100,
         Visualization: #Progress,
     },
-    UI.DataPoint #TotalPrice1             : {
+    UI.DataPoint #TotalPrice1              : {
         Value       : TotalPrice,
         MinimumValue: 0,
         MaximumValue: 120,
     },
-    UI.Chart #TotalPrice                  : {
+    UI.Chart #TotalPrice                   : {
         ChartType        : #Bullet,
         Title            : '{i18n>TotalPrice}',
         Measures         : [TotalPrice, ],
@@ -217,24 +230,24 @@ annotate TravelService.Travel with @(
             Measure  : TotalPrice,
         }, ],
     },
-    UI.FieldGroup #TravelAdministrativeData : {
-        $Type : 'UI.FieldGroupType',
+    UI.FieldGroup #TravelAdministrativeData: {
+        $Type: 'UI.FieldGroupType',
         Data : [
             {
-                $Type : 'UI.DataField',
-                Value : createdAt,
+                $Type: 'UI.DataField',
+                Value: createdAt,
             },
             {
-                $Type : 'UI.DataField',
-                Value : createdBy,
+                $Type: 'UI.DataField',
+                Value: createdBy,
             },
             {
-                $Type : 'UI.DataField',
-                Value : LastChangedAt,
+                $Type: 'UI.DataField',
+                Value: LastChangedAt,
             },
             {
-                $Type : 'UI.DataField',
-                Value : LastChangedBy,
+                $Type: 'UI.DataField',
+                Value: LastChangedBy,
             },
         ],
     },
@@ -483,58 +496,60 @@ annotate TravelService.Travel with {
     Description @UI.MultiLineText: true
                 @UI.Placeholder  : '{i18n>DescrPlcehlder}'
 }
+
 annotate TravelService.Booking with {
     ConnectionID @(
-        Common.ValueList : {
-            CollectionPath : 'Flight',
-            Label : '',
-            Parameters : [
+        Common.ValueList               : {
+            CollectionPath              : 'Flight',
+            Label                       : '',
+            Parameters                  : [
                 {
-                    $Type : 'Common.ValueListParameterInOut',
-                    ValueListProperty : 'AirlineID',
-                    LocalDataProperty : to_Carrier_AirlineID,
+                    $Type            : 'Common.ValueListParameterInOut',
+                    ValueListProperty: 'AirlineID',
+                    LocalDataProperty: to_Carrier_AirlineID,
                 },
                 {
-                    $Type : 'Common.ValueListParameterInOut',
-                    LocalDataProperty : ConnectionID,
-                    ValueListProperty : 'ConnectionID',
+                    $Type            : 'Common.ValueListParameterInOut',
+                    LocalDataProperty: ConnectionID,
+                    ValueListProperty: 'ConnectionID',
                 },
                 {
-                    $Type : 'Common.ValueListParameterInOut',
-                    ValueListProperty : 'FlightDate',
-                    LocalDataProperty : FlightDate,
+                    $Type            : 'Common.ValueListParameterInOut',
+                    ValueListProperty: 'FlightDate',
+                    LocalDataProperty: FlightDate,
                 },
                 {
-                    $Type : 'Common.ValueListParameterInOut',
-                    ValueListProperty : 'Price',
-                    LocalDataProperty : FlightPrice,
+                    $Type            : 'Common.ValueListParameterInOut',
+                    ValueListProperty: 'Price',
+                    LocalDataProperty: FlightPrice,
                 },
                 {
-                    $Type : 'Common.ValueListParameterInOut',
-                    ValueListProperty : 'CurrencyCode_code',
-                    LocalDataProperty : CurrencyCode_code,
+                    $Type            : 'Common.ValueListParameterInOut',
+                    ValueListProperty: 'CurrencyCode_code',
+                    LocalDataProperty: CurrencyCode_code,
                 },
                 {
-                    $Type : 'Common.ValueListParameterDisplayOnly',
-                    ValueListProperty : 'to_Airline/Name',
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'to_Airline/Name',
                 },
                 {
-                    $Type : 'Common.ValueListParameterDisplayOnly',
-                    ValueListProperty : 'PlaneType',
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'PlaneType',
                 },
                 {
-                    $Type : 'Common.ValueListParameterDisplayOnly',
-                    ValueListProperty : 'MaximumSeats',
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'MaximumSeats',
                 },
                 {
-                    $Type : 'Common.ValueListParameterDisplayOnly',
-                    ValueListProperty : 'OccupiedSeats',
+                    $Type            : 'Common.ValueListParameterDisplayOnly',
+                    ValueListProperty: 'OccupiedSeats',
                 },
             ],
-            PresentationVariantQualifier : 'SortOrderPV',
+            PresentationVariantQualifier: 'SortOrderPV',
         },
-        Common.ValueListWithFixedValues : true,
-)};
+        Common.ValueListWithFixedValues: true,
+    )
+};
 
 annotate TravelService.Travel @(Common.SideEffects #ReactonItemCreationOrDeletion: {
     SourceEntities  : [to_Booking],
