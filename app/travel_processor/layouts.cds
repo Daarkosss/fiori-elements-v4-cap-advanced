@@ -269,6 +269,54 @@ annotate TravelService.Travel with @(
         ],
         Title : 'Travels by Customer Country',
     },
+    UI.Chart #visualFilter : {
+        $Type : 'UI.ChartDefinitionType',
+        ChartType : #Bar,
+        Dimensions : [
+            to_Agency_AgencyID,
+        ],
+        DynamicMeasures : [
+            '@Analytics.AggregatedProperty#TravelID_countdistinct',
+        ],
+    },
+    UI.PresentationVariant #visualFilter : {
+        $Type : 'UI.PresentationVariantType',
+        Visualizations : [
+            '@UI.Chart#visualFilter',
+        ],
+    },
+    UI.Chart #visualFilter1 : {
+        $Type : 'UI.ChartDefinitionType',
+        ChartType : #Bar,
+        Dimensions : [
+            to_Customer_CustomerID,
+        ],
+        DynamicMeasures : [
+            '@Analytics.AggregatedProperty#TravelID_countdistinct',
+        ],
+    },
+    UI.PresentationVariant #visualFilter1 : {
+        $Type : 'UI.PresentationVariantType',
+        Visualizations : [
+            '@UI.Chart#visualFilter1',
+        ],
+    },
+    UI.Chart #visualFilter2 : {
+        $Type : 'UI.ChartDefinitionType',
+        ChartType : #Line,
+        Dimensions : [
+            BeginDate,
+        ],
+        DynamicMeasures : [
+            '@Analytics.AggregatedProperty#TravelID_countdistinct',
+        ],
+    },
+    UI.PresentationVariant #visualFilter2 : {
+        $Type : 'UI.PresentationVariantType',
+        Visualizations : [
+            '@UI.Chart#visualFilter2',
+        ],
+    },
 );
 
 annotate TravelService.Booking with @(
@@ -581,10 +629,52 @@ annotate TravelService.Travel with {
             LocalProperty         : to_Customer_CustomerID,
             SemanticObjectProperty: 'CustomerID'
         }]
-    })
+    },
+        Common.ValueList #visualFilter : {
+            $Type : 'Common.ValueListType',
+            CollectionPath : 'Travel',
+            Parameters : [
+                {
+                    $Type : 'Common.ValueListParameterInOut',
+                    LocalDataProperty : to_Customer_CustomerID,
+                    ValueListProperty : 'to_Customer_CustomerID',
+                },
+            ],
+            PresentationVariantQualifier : 'visualFilter1',
+        },)
     to_Customer
 };
 annotate TravelService.Travel with {
     PassengerCountry @Common.Label : '{i18n>Customercountry}'
+};
+
+annotate TravelService.Travel with {
+    to_Agency @Common.ValueList #visualFilter : {
+        $Type : 'Common.ValueListType',
+        CollectionPath : 'Travel',
+        Parameters : [
+            {
+                $Type : 'Common.ValueListParameterInOut',
+                LocalDataProperty : to_Agency_AgencyID,
+                ValueListProperty : 'to_Agency_AgencyID',
+            },
+        ],
+        PresentationVariantQualifier : 'visualFilter',
+    }
+};
+
+annotate TravelService.Travel with {
+    BeginDate @Common.ValueList #visualFilter : {
+        $Type : 'Common.ValueListType',
+        CollectionPath : 'Travel',
+        Parameters : [
+            {
+                $Type : 'Common.ValueListParameterInOut',
+                LocalDataProperty : BeginDate,
+                ValueListProperty : 'BeginDate',
+            },
+        ],
+        PresentationVariantQualifier : 'visualFilter2',
+    }
 };
 
